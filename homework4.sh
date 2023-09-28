@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/bash -x
+
 
 ########################################################################
 # 
@@ -71,9 +72,13 @@ usage(){
 ## otherwise exit with error (make sure that the exit code is not 0!)
 ## Printout the usage information using the provided `usage` function
 ## Hints: Use the information at Tutorial 4 slides: 41, 44, 47, 55, Ex4.14, 62
-if YOUR_CODE_HERE then
-   echo "Missing parameters. Exiting..."
-   YOUR_CODE_HERE
+if [[ $# -le 0 ]]; then
+   echo "Missing parameters. Exiting...";
+   usage;
+   exit 1; #this means that it is unsuccessful, and you have to add a parameter(when one is added it will continue)
+ else
+    echo "More than 1 parameter!Yippie!";
+    exit 0;
 fi
 
 # E2 (1 point) Store all parameters into the following variable URL
