@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 
 
 ########################################################################
@@ -59,7 +59,7 @@
 usage(){
    echo "   usage: $0 URL1 URL2 URL3 ..."
    echo "   Example:"
-   echo "   $0 'https://canvas.education.lu.se/files/4047200/download?download_frd=1' 'https://github.com/floridop/MNXB11-BASH/blob/main/README.md'  http://www.hep.lu.se"
+   echo "   $0 'https://canvas.education.lu.se/files/4047200/download?download_frd=1' 'https://github.com/floridop/MNXB11-BASH/blob/main/README.md'  "http://www.hep.lu.se
 }
 
 #### END: Functions - DO NOT MODIFY ABOVE CODE ########
@@ -72,10 +72,11 @@ usage(){
 ## otherwise exit with error (make sure that the exit code is not 0!)
 ## Printout the usage information using the provided `usage` function
 ## Hints: Use the information at Tutorial 4 slides: 41, 44, 47, 55, Ex4.14, 62
+
 if [[ $# -le 0 ]]; then
    echo "Missing parameters. Exiting...";
    usage;
-   exit 1; #this means that it is unsuccessful, and you have to add a parameter(when one is added it will continue)
+   exit 1; # this means that it is unsuccessful, and you have to add a parameter(when one is added it will continue)
  else
     echo "More than 1 parameter!Yippie!";
     exit 0;
@@ -87,12 +88,19 @@ fi
 ## Choose the proper predefined variable to use according to tutorial 4
 ## Slides: 44 and exercise 4.11
 ## See this page about Positional Parameters: https://tldp.org/LDP/abs/html/internalvariables.html
-URLS=YOUR_CODE_HERE
+URLS="$@"
+
 
 # E3 (1 point) create the folders `PDF` and `notPDF` in the current directory
 ## Hint: you can create multiple directories with just one command.
 ## See tutorial 2 and 4 about how to create directories
-YOUR_CODE_HERE
+mkdir PDF notPDF
+
+#if [ -d "PDF" ] && [ -d "notPDF" ]; then
+   # echo "The two folders have been created."
+#else
+  #  echo "Failed to create the folders. Check permissions or try creating them manually."
+#fi
 
 # Start download counter - DO NOT CHANGE THIS
 COUNT=1
@@ -103,14 +111,14 @@ COUNT=1
 ## call the for running variable "url" 
 ## (see how it is used later in the messages provided)
 ## Hints: see Tutorial 4 slide 85 and exercise 4.22
-for YOUR_CODE_HERE do
-       
+for url in "$@"; do
+    
     # E5 (1 point) Create a filename for the downloaded file and place it in the
     # CURRENTINPUTFILE variable.
     ## The filename must be like: input_currentvalueofCOUNT
     ## For example: input_0 if COUNT is 0
     ## Hint: just use the COUNT variable and double quotes to create the filename
-    CURRENTINPUTFILE=YOUR_CODE_HERE
+    CURRENTINPUTFILE="input_$COUNT"
     
     # Print out what is been processing - DO NOT CHANGE THIS
     echo "Processing url $COUNT $url"
@@ -123,7 +131,7 @@ for YOUR_CODE_HERE do
     ## Hints: See https://www.linuxandubuntu.com/home/12-practical-examples-of-wget-command-on-linux?expand_article=1 about
     ## selecting a filename and https://www.gnu.org/software/wget/manual/html_node/Logging-and-Input-File-Options.html
     ## to "append" to logfile. 
-    YOUR_CODE_HERE
+    wget --append-output=wget.log -0 "$CURRENTINPUT" "$url"   # syntax-order wget options url
     
     # E7 (1 point) Test if the download was successful
     ## A successful download will make wget exit with exit status == 0
