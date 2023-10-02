@@ -73,14 +73,14 @@ usage(){
 ## Printout the usage information using the provided `usage` function
 ## Hints: Use the information at Tutorial 4 slides: 41, 44, 47, 55, Ex4.14, 62
 
-if [[ $# -le 0 ]]; then
-   echo "Missing parameters. Exiting...";
-   usage;
-   exit 1; # this means that it is unsuccessful, and you have to add a parameter(when one is added it will continue)
- else
-    echo "More than 1 parameter!Yippie!";
-    exit 0;
-fi
+#if [[ $# -le 0 ]]; then
+  # echo "Missing parameters. Exiting...";
+  # usage;
+  # exit 1; # this means that it is unsuccessful, and you have to add a parameter(when one is added it will continue)
+ #else
+   # echo "More than 1 parameter!Yippie!";
+   # exit 0;
+#fi
 
 # E2 (1 point) Store all parameters into the following variable URL
 ## The script should be able to handle any number of parameters allowed by bash.
@@ -88,18 +88,17 @@ fi
 ## Choose the proper predefined variable to use according to tutorial 4
 ## Slides: 44 and exercise 4.11
 ## See this page about Positional Parameters: https://tldp.org/LDP/abs/html/internalvariables.html
-URLS="$@"
+URL="$@"
 
 
 # E3 (1 point) create the folders `PDF` and `notPDF` in the current directory
 ## Hint: you can create multiple directories with just one command.
 ## See tutorial 2 and 4 about how to create directories
 mkdir PDF notPDF
-
-#if [ -d "PDF" ] && [ -d "notPDF" ]; then
-   # echo "The two folders have been created."
+#if [[ -d "PDF" ]] && [[ -d "notPDF" ]]; then
+    #echo "The two folders have been created."
 #else
-  #  echo "Failed to create the folders. Check permissions or try creating them manually."
+    #echo "Failed to create the folders. Check permissions or try creating them manually."
 #fi
 
 # Start download counter - DO NOT CHANGE THIS
@@ -131,16 +130,18 @@ for url in "$@"; do
     ## Hints: See https://www.linuxandubuntu.com/home/12-practical-examples-of-wget-command-on-linux?expand_article=1 about
     ## selecting a filename and https://www.gnu.org/software/wget/manual/html_node/Logging-and-Input-File-Options.html
     ## to "append" to logfile. 
-    wget --append-output=wget.log -0 "$CURRENTINPUT" "$url"   # syntax-order wget options url
+    wget --append-output=wget.log -O "$CURRENTINPUT" "$url"   # syntax-order wget options url
     
     # E7 (1 point) Test if the download was successful
     ## A successful download will make wget exit with exit status == 0
     ## Hint: use the special variable that contains the process exit value
     ## See Tutorial 4 slides 41, 45, 46 and also https://www.delftstack.com/howto/linux/bash-check-exit-code/
-    if YOUR_CODE_HERE then
+    if [ $? -eq 0 ]; then
         
         # If the download is successful:
-        
+        echo "Download successful for $url"
+
+
         # E8 (3 points) Determine if the downloaded file is a PDF
         ## - Use the `file` command to determine the kind of file downloaded
         ## - Pass the output of the above command to the `grep` command using a pipe `|`
@@ -149,7 +150,9 @@ for url in "$@"; do
         ## page 49; about the pipe in Tutorial 4 slide 57-58.
         ## Test the commands and their pipe concatenation in the command line before
         ## adding to the script! 
-        YOUR_CODE_HERE
+        #Y OUR_CODE_HERE
+        file "$CURRENTINPUT" | grep -i "PDF"
+
         
         # E9 (5 points) Write an if..then..else that does the following:
         ## if condition: checks if the previous grep command was succesful. 
@@ -163,26 +166,27 @@ for url in "$@"; do
         ## so that you know that the move will happen after them message is shown
         ## Hints: Read Tutorial 4 slides 48-56 and do exercises 4.13-4.15. Use the exit values
         ## described in slides 45-47, review Tutorial 1 to learn how to move files.
-        YOUR_CODE_HERE
+        #YOUR_CODE_HERE
+        if [ $? -eq 0 ]; then
             # then output message
-            echo "File $CURRENTINPUTFILE is a PDF, Moving to directory PDF..."
-            YOUR_CODE_HERE
-        YOUR_CODE_HERE
+            echo "File "$CURRENTINPUTFILE" is a PDF, Moving to directory PDF..."
+            mv "$CURRENTINPUTFILE" PDF/"$CURRENTINPUTFILE".pdf
+        else
             # else output message
-            echo "File $CURRENTINPUTFILE is not a PDF, moving to directory notPDF..."
-            YOUR_CODE_HERE
-        YOUR_CODE_HERE
+            echo "File "$CURRENTINPUTFILE" is not a PDF, moving to directory notPDF..."
+            mv "$CURRENTINPUTFILE" notPDF/
+        fi
     else
        # If the download is not successful:
        
        # Skip the processing of the file since the download failed.
-       echo "Download of $CURRENTINPUTFILE failed, skipping..."
+       echo "Download of "$CURRENTINPUTFILE" failed, skipping..."
        
        # E10 (1 point) Delete the current processed file $CURRENTINPUTFILE since
        ## the download failed, but wget may have written the file already
        ## leaving clutter
        ## Hints: see tutorial 1 on how to delete files
-       YOUR_CODE_HERE
+       rm "$CURRENTINPUTFILE"
     fi
     
     # Increase the download counter - DO NOT CHANGE THIS
